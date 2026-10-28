@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+
+- `fetch_content` recognizes mixed-case Content-Type headers, so HTML still goes through readable extraction and Cloudflare challenge detection, and PDF and binary types are handled like lowercase types ([#631](https://github.com/nicobailon/pi-web-access/issues/631)). Thanks to [@Nyarlathoteppppp](https://github.com/Nyarlathoteppppp) for [PR #632](https://github.com/nicobailon/pi-web-access/pull/632).
+
 ## [0.45.0] - 2026-10-25
 
 ### Highlights
