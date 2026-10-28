@@ -16,6 +16,7 @@ import { extractWithDeepSeek, isDeepSeekAvailable } from "./deepseek.ts";
 import { extractWithExa, hasExaApiKey } from "./exa.ts";
 import { extractWithSearch1API, isSearch1APIAvailable } from "./search1api.ts";
 import { extractWithQuerit, isQueritAvailable } from "./querit.ts";
+import { extractWithTabstack, isTabstackAvailable } from "./tabstack.ts";
 import { extractWithKagi, isKagiExtractAvailable } from "./kagi.ts";
 import { extractWithOllama, isOllamaFetchAvailable } from "./ollama.ts";
 import { extractWithFirecrawl, isFirecrawlAvailable } from "./firecrawl.ts";
@@ -70,11 +71,11 @@ function loadFetchTimeoutMs(): number {
 const NON_RECOVERABLE_ERRORS = ["Unsupported content type", "Response too large", "PDF extraction is disabled", "Image fetching is disabled", "fetchContent.curl command not found"];
 const MIN_USEFUL_CONTENT = 500;
 const SUPPORTED_IMAGE_TYPES = new Set(["image/png", "image/jpeg", "image/webp", "image/gif"]);
-const FETCH_PROVIDERS = ["http", "firecrawl", "crawl4ai", "jina", "tinyfish", "search1api", "querit", "kagi", "ollama", "parallel", "parallel-mcp", "brightdata", "gemini", "deepseek", "exa"] as const;
+const FETCH_PROVIDERS = ["http", "firecrawl", "crawl4ai", "jina", "tinyfish", "search1api", "querit", "kagi", "ollama", "parallel", "parallel-mcp", "brightdata", "gemini", "deepseek", "exa", "tabstack"] as const;
 type FetchProvider = typeof FETCH_PROVIDERS[number];
 type FetchRouting = { providers: FetchProvider[]; allowRemoteHostedProviders: boolean };
 const DEFAULT_FETCH_PROVIDER_ORDER: FetchProvider[] = ["http", "firecrawl", "crawl4ai", "jina", "tinyfish", "search1api", "querit", "kagi", "ollama", "parallel", "brightdata", "gemini"];
-const REMOTE_HOSTED_FETCH_PROVIDERS = new Set<FetchProvider>(["jina", "tinyfish", "search1api", "querit", "kagi", "ollama", "parallel", "parallel-mcp", "brightdata", "gemini", "deepseek", "exa"]);
+const REMOTE_HOSTED_FETCH_PROVIDERS = new Set<FetchProvider>(["jina", "tinyfish", "search1api", "querit", "kagi", "ollama", "parallel", "parallel-mcp", "brightdata", "gemini", "deepseek", "exa", "tabstack"]);
 
 function isDefuddleConsoleError(args: Parameters<typeof console.error>): boolean {
 	const prefix = args[0];
@@ -869,6 +870,7 @@ export async function extractContent(
 	let tinyfishError: string | null = null;
 	let search1apiError: string | null = null;
 	let queritError: string | null = null;
+	let tabstackError: string | null = null;
 	let kagiError: string | null = null;
 	let ollamaError: string | null = null;
 	let parallelError: string | null = null;
@@ -973,6 +975,20 @@ export async function extractContent(
 				if (isAbortError(err)) return abortedResult(url);
 				queritError = errorMessage(err);
 				if (isConfigParseError(err)) return parseErrorResult(queritError);
+			}
+			continue;
+		}
+
+		if (provider === "tabstack") {
+			try {
+				if (isTabstackAvailable()) {
+					const tabstackResult = await extractWithTabstack(url, signal, options);
+					if (tabstackResult) return withDeclaredLinks(tabstackResult);
+				}
+			} catch (err) {
+				if (isAbortError(err)) return abortedResult(url);
+				tabstackError = errorMessage(err);
+				if (isConfigParseError(err)) return parseErrorResult(tabstackError);
 			}
 			continue;
 		}
@@ -1138,6 +1154,7 @@ export async function extractContent(
 		...(brightdataError ? [`Bright Data fallback failed: ${brightdataError}`] : []),
 		...(deepseekError ? [`DeepSeek fallback failed: ${deepseekError}`] : []),
 		...(exaError ? [`Exa fallback failed: ${exaError}`] : []),
+		...(tabstackError ? [`Tabstack fallback failed: ${tabstackError}`] : []),
 		"",
 		"Fallback options:",
 		...(jinaHint ? [jinaHint] : []),
@@ -1152,6 +1169,7 @@ export async function extractContent(
 		`  • Set brightdataApiKey and brightdataUnlockerZone in ${WEB_SEARCH_CONFIG_PATH} or BRIGHTDATA_API_KEY and BRIGHTDATA_UNLOCKER_ZONE`,
 		`  • Set deepseekApiKey in ${WEB_SEARCH_CONFIG_PATH} or DEEPSEEK_API_KEY and add "deepseek" to fetchRouting.providers`,
 		`  • Set exaApiKey in ${WEB_SEARCH_CONFIG_PATH} or EXA_API_KEY and add "exa" to fetchRouting.providers`,
+		`  • Set tabstackApiKey in ${WEB_SEARCH_CONFIG_PATH} or TABSTACK_API_KEY and add "tabstack" to fetchRouting.providers`,
 		`  • Set GEMINI_API_KEY in ${WEB_SEARCH_CONFIG_PATH}`,
 		"  • Sign into gemini.google.com in Chrome",
 		...(searchToolName ? [`  • Use ${searchToolName} to find content about this topic`] : []),
