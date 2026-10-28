@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Search through the [Cloudflare Web Search API](https://developers.cloudflare.com/web-search/) with `provider: "cloudflare"`. It runs on Ceramic, Exa, or Linkup (`cloudflareSearchProvider`, default Ceramic) through your AI Gateway, billed to AI Gateway credits or a provider key stored on the gateway. It reads the `CLOUDFLARE_API_KEY` and `CLOUDFLARE_ACCOUNT_ID` environment variables, or `cloudflareApiKey` and `cloudflareAccountId` in `web-search.json`; a Cloudflare key saved with Pi's `/login` is not used. It is explicit-only, so `auto` and `all` never spend on it. Thanks to [@kestermcullough](https://github.com/kestermcullough) for [PR #639](https://github.com/nicobailon/pi-web-access/pull/639).
+- `fetch_content` can read a page through Exa when a site refuses the direct fetch, using the Exa key you already set for search (`exaApiKey` or `EXA_API_KEY`). Add `"exa"` to `fetchRouting.providers` and set `fetchRouting.allowRemoteHostedProviders` to `true`; the page address is sent to Exa, and Exa bills each page it reads. A page Exa can't read comes back as an Exa error, not an empty page. Thanks to [@ccc592](https://github.com/ccc592) for [issue #633](https://github.com/nicobailon/pi-web-access/issues/633).
 
 ### Changed
 
