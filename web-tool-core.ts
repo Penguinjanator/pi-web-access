@@ -75,6 +75,8 @@ export interface WebSearchConfig {
 	cloudflareAccountId?: unknown;
 	cloudflareGatewayId?: unknown;
 	cloudflareSearchProvider?: unknown;
+	searchapiApiKey?: unknown;
+	searchapiBaseUrl?: unknown;
 	deepseekApiKey?: unknown;
 	degoogBaseUrl?: unknown;
 	degoogApiKey?: unknown;
