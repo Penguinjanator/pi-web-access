@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Search through the [Cloudflare Web Search API](https://developers.cloudflare.com/web-search/) with `provider: "cloudflare"`. It runs on Ceramic, Exa, or Linkup (`cloudflareSearchProvider`, default Ceramic) through your AI Gateway, billed to AI Gateway credits or a provider key stored on the gateway. It reads the `CLOUDFLARE_API_KEY` and `CLOUDFLARE_ACCOUNT_ID` environment variables, or `cloudflareApiKey` and `cloudflareAccountId` in `web-search.json`; a Cloudflare key saved with Pi's `/login` is not used. It is explicit-only, so `auto` and `all` never spend on it. Thanks to [@kestermcullough](https://github.com/kestermcullough) for [PR #639](https://github.com/nicobailon/pi-web-access/pull/639).
+
 ### Changed
 
 - The MCP server's tool definitions shrink from about 7,000 to about 3,500 characters (about 1,750 to 900 tokens) on every request to the model. `provider` is now `string | string[]` instead of listing every provider name twice, and an unknown name is still rejected before any request, with the valid names in the error. Parameter descriptions use the same short wording as the Pi tools. Thanks to [@mikeyobrien](https://github.com/mikeyobrien) for [PR #644](https://github.com/nicobailon/pi-web-access/pull/644).
