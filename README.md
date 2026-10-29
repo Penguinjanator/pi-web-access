@@ -12,6 +12,12 @@
 
 <https://github.com/user-attachments/assets/cac6a17a-1eeb-4dde-9818-cdf85d8ea98f>
 
+## What's new in 0.46
+
+https://github.com/user-attachments/assets/e20f3e53-182f-42f5-9551-c29a432f2877
+
+Page fetches can now connect the way a browser does, so more sites that block bots send the page: in a test of 68 pages, the extension read 31 instead of 18. Pages that still refuse can be read through Exa or Tabstack. Three new search providers run only when you pick them: Cloudflare, Google through SearchApi, and Tabstack, which returns one cited answer instead of a list of links. Over MCP, the tools take about half as many tokens on every request, and reading a PDF now gives you its text. See the [changelog](CHANGELOG.md#0460---2026-10-28) for everything in this release.
+
 ## What's new in 0.45
 
 https://github.com/user-attachments/assets/d9296f9b-9769-4ca0-8c27-ef1a766afcdc
