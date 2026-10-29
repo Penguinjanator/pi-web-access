@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Highlights
+
+- Read more pages that block bots. Page fetches can connect the way Chrome does: in a test of 68 mostly bot-protected pages, readable pages went from 18 to about 31. Blocked pages can also be handed to Exa or Tabstack.
+- Three new search options, each used only when you pick it: Cloudflare, Google through SearchApi, and Tabstack, which returns one cited answer instead of a list of links.
+- Over MCP, the web tools take half as much of every request to the model (about 1.75k → 0.9k tokens).
+- Reading a PDF now gives you its text instead of a note saying where the file was saved.
+- A proxy you set keeps working after Pi reloads, and a rate-limited free search now says so instead of claiming no search provider is set up.
+
 ### Added
 
 - Search through the [Cloudflare Web Search API](https://developers.cloudflare.com/web-search/) with `provider: "cloudflare"`. It runs on Ceramic, Exa, or Linkup (`cloudflareSearchProvider`, default Ceramic) through your AI Gateway, billed to AI Gateway credits or a provider key stored on the gateway. It reads the `CLOUDFLARE_API_KEY` and `CLOUDFLARE_ACCOUNT_ID` environment variables, or `cloudflareApiKey` and `cloudflareAccountId` in `web-search.json`; a Cloudflare key saved with Pi's `/login` is not used. It is explicit-only, so `auto` and `all` never spend on it. Thanks to [@kestermcullough](https://github.com/kestermcullough) for [PR #639](https://github.com/nicobailon/pi-web-access/pull/639).
